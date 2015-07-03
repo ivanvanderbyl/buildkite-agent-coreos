@@ -289,7 +289,7 @@ fi
 
 # Generate a temporary build script containing what to actually run.
 buildkite-debug "~~~ Preparing build script"
-BUILDKITE_SCRIPT_PATH="$BUILDKITE_BUILD_CHECKOUT_PATH/buildkite-script-$BUILDKITE_JOB_ID"
+BUILDKITE_SCRIPT_PATH="buildkite-script-$BUILDKITE_JOB_ID"
 
 # Generate a different script depending on whether or not it's a script to
 # execute
@@ -298,17 +298,17 @@ if [[ -f "$BUILDKITE_COMMAND" ]]; then
   # this inside the script we generate because it fails within Docker:
   # https://github.com/docker/docker/issues/9547
   buildkite-run-debug "chmod +x \"$BUILDKITE_COMMAND\""
-  echo -e '#!/bin/bash'"\n./\"$BUILDKITE_COMMAND\"" > "$BUILDKITE_SCRIPT_PATH"
+  echo -e '#!/bin/bash'"\n./\"$BUILDKITE_COMMAND\"" > "$BUILDKITE_BUILD_CHECKOUT_PATH/$BUILDKITE_SCRIPT_PATH"
 else
-  echo -e '#!/bin/bash'"\n$BUILDKITE_COMMAND" > "$BUILDKITE_SCRIPT_PATH"
+  echo -e '#!/bin/bash'"\n$BUILDKITE_COMMAND" > "$BUILDKITE_BUILD_CHECKOUT_PATH/$BUILDKITE_SCRIPT_PATH"
 fi
 
 if [[ "$BUILDKITE_AGENT_DEBUG" == "true" ]]; then
-  buildkite-run "cat $BUILDKITE_SCRIPT_PATH"
+  buildkite-run "cat $BUILDKITE_BUILD_CHECKOUT_PATH/$BUILDKITE_SCRIPT_PATH"
 fi
 
 # Ensure the temporary build script can be executed
-chmod +x "$BUILDKITE_SCRIPT_PATH"
+chmod +x "$BUILDKITE_BUILD_CHECKOUT_PATH/$BUILDKITE_SCRIPT_PATH"
 
 # If the command isn't a file on the filesystem, then it's something we need to
 # eval. But before we even try running it, we should double check that the
@@ -366,7 +366,7 @@ else
 
     # Run the build script command in a one-off container
     echo "~~~ $BUILDKITE_COMMAND_ACTION (in Docker container)"
-    buildkite-prompt-and-run "docker run --name $DOCKER_CONTAINER $DOCKER_IMAGE \"$BUILDKITE_SCRIPT_PATH\""
+    buildkite-prompt-and-run "docker run --name $DOCKER_CONTAINER $DOCKER_IMAGE \"./$BUILDKITE_SCRIPT_PATH\""
 
     # Capture the exit status from the build script
     export BUILDKITE_COMMAND_EXIT_STATUS=$?
