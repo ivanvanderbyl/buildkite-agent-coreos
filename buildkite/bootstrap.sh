@@ -366,7 +366,7 @@ else
 
     # Run the build script command in a one-off container
     echo "~~~ $BUILDKITE_COMMAND_ACTION (in Docker container)"
-    buildkite-prompt-and-run "docker run --name $DOCKER_CONTAINER $DOCKER_IMAGE \"./$BUILDKITE_SCRIPT_PATH\""
+    buildkite-prompt-and-run "docker run --name $DOCKER_CONTAINER $DOCKER_IMAGE \"$BUILDKITE_SCRIPT_PATH\""
 
     # Capture the exit status from the build script
     export BUILDKITE_COMMAND_EXIT_STATUS=$?
@@ -406,7 +406,7 @@ else
   else
     echo "~~~ $BUILDKITE_COMMAND_ACTION"
     echo -e "$BUILDKITE_PROMPT $BUILDKITE_COMMAND_DISPLAY"
-    ."/$BUILDKITE_SCRIPT_PATH"
+    ."$BUILDKITE_SCRIPT_PATH"
 
     # Capture the exit status from the build script
     export BUILDKITE_COMMAND_EXIT_STATUS=$?
