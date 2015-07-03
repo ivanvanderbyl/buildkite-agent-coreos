@@ -1,0 +1,17 @@
+[Unit]
+Description=BuildKite Agent
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill buildkite-%i
+ExecStartPre=-/usr/bin/docker rm buildkite-%i
+ExecStartPre=/usr/bin/docker pull buildkite/agent:ubuntu
+ExecStart=/usr/bin/docker run -e BUILDKITE_AGENT_META_DATA=docker=true,frontend=true,queue=dashboard -e BUILDKITE_AGENT_TOKEN=cdcd277c09cc64852a538978fb4fff20e5e9cfb555d399f21b --name buildkite-%i -v /var/run/docker.sock:/var/run/docker.sock ivanvanderbyl/fleet-builder
+
+[Install]
+WantedBy=multi-user.target
+
+[X-Fleet]
+Conflicts=buildkite-*
