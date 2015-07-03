@@ -7,5 +7,7 @@ RUN apt-get install -qqy apt-transport-https; apt-key adv --keyserver pgp.mit.ed
 RUN apt-get update -qq && apt-get install -qqy \
     lxc-docker-1.6.2
 
+ADD ./buildkite/bootstrap.sh ./buildkite/bootstrap.sh
+
 ENTRYPOINT ["buildkite-agent"]
 CMD ["start"]
