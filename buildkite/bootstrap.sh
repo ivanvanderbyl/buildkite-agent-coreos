@@ -289,7 +289,7 @@ fi
 
 # Generate a temporary build script containing what to actually run.
 buildkite-debug "~~~ Preparing build script"
-BUILDKITE_SCRIPT_PATH="/coreos-tmp/buildkite-script-$BUILDKITE_JOB_ID"
+BUILDKITE_SCRIPT_PATH="buildkite-script-$BUILDKITE_JOB_ID"
 
 # Generate a different script depending on whether or not it's a script to
 # execute
@@ -366,7 +366,7 @@ else
 
     # Run the build script command in a one-off container
     echo "~~~ $BUILDKITE_COMMAND_ACTION (in Docker container)"
-    buildkite-prompt-and-run "docker run --name $DOCKER_CONTAINER $DOCKER_IMAGE \"$BUILDKITE_SCRIPT_PATH\""
+    buildkite-prompt-and-run "docker run --name $DOCKER_CONTAINER $DOCKER_IMAGE \"./$BUILDKITE_SCRIPT_PATH\""
 
     # Capture the exit status from the build script
     export BUILDKITE_COMMAND_EXIT_STATUS=$?
@@ -406,7 +406,7 @@ else
   else
     echo "~~~ $BUILDKITE_COMMAND_ACTION"
     echo -e "$BUILDKITE_PROMPT $BUILDKITE_COMMAND_DISPLAY"
-    ."$BUILDKITE_SCRIPT_PATH"
+    ."/$BUILDKITE_SCRIPT_PATH"
 
     # Capture the exit status from the build script
     export BUILDKITE_COMMAND_EXIT_STATUS=$?
